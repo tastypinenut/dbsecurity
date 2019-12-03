@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"
+>
+
+    <!-- 数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <!-- 数据库基本信息配置 -->
+        <property name="url" value="${druid.url}"/>
+        <property name="username" value="${druid.username}"/>
+        <property name="password" value="${druid.password}"/>
+        <property name="driverClassName" value="${druid.driverClassName}"/>
+
+        <property name="proxyFilters">
+            <list>
+                <!-- 配置加解密拦截器 -->
+                <ref bean="securityFilter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 加解密拦截器 -->
+    <bean id="securityFilter" class="xyz.tpn.dbsecurity.druid.SecurityFilter" init-method="init">
+        <!-- 加密是否启用 -->
+        <property name="encryptEnabled" value="true"/>
+        <!-- 需要加密的表名字段名 -->
+        <property name="encryptTableColumns" value="t_user_info=name,phone,bank_card_no;xx=yy"/>
+        <!-- 是否启用并发线程池，默认不启用 -->
+        <property name="encryptExecutorEnabled" value="true"/>
+        <!-- 并发线程数，需要根据具体业务量以及机器性能合理评估 -->
+        <property name="encryptCorePoolSize" value="10"/>
+        <property name="encryptMaxPoolSize" value="100"/>
+
+        <!-- 解密是否启用 -->
+        <property name="decryptEnabled" value="true"/>
+        <!-- 需要解密的表名字段名 -->
+        <property name="decryptTableColumns" value="t_user_info=name,phone,bank_card_no;xx=yy"/>
+        <!-- 是否启用并发线程池，默认不启用-->
+        <property name="decryptExecutorEnabled" value="true"/>
+        <!-- 并发线程数，需要根据具体业务量以及机器性能合理评估 -->
+        <property name="decryptCorePoolSize" value="10"/>
+        <property name="decryptMaxPoolSize" value="100"/>
+
+        <property name="securityHandler" ref="securityHandler"/>
+    </bean>
+
+    <!-- 自行实现SecurityHandler-->
+    <bean id="securityHandler" class="xxx.yyy.SecurityHandler">
+    </bean>
+
+</beans>

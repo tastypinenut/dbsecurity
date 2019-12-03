@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="jdbc.properties"/>
+
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <typeAlias type="xyz.tpn.dbsecurity.druid.DruidDataSourceFactory"
+                   alias="DRUID" />
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="DRUID">
+                <property name="jdbc.driver" value="${jdbc.driver}"/>
+                <property name="jdbc.url" value="${jdbc.url}"/>
+                <property name="jdbc.user" value="${jdbc.user}"/>
+                <property name="jdbc.password" value="${jdbc.password}"/>
+                <property name="defaultAutoCommit" value="true"/>
+
+                <!--需要加密的字段名(对应实体类的表名)，多个请用逗号分隔开-->
+                <property name="encryptTableColumns" value="t_user_info=name,bank_card_no;t_param=param_value[param_name:name|param_name:bankCard]"/>
+                <property name="encryptExecutorEnabled" value="true"/>
+                <property name="encryptCorePoolSize" value="10"/>
+                <property name="encryptMaxPoolSize" value="100"/>
+
+                <!--需要解密的字段名(对应实体类的表名)，多个请用逗号分隔开-->
+                <property name="decryptTableColumns" value="t_user_info=name,bank_card_no;t_param=param_value[param_name:name|param_name:bankCard]"/>
+                <property name="decryptExecutorEnabled" value="true"/>
+                <property name="decryptCorePoolSize" value="10"/>
+                <property name="decryptMaxPoolSize" value="100"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="UserInfoMapper.xml"/>
+        <mapper resource="ParamInfoMapper.xml"/>
+    </mappers>
+
+
+</configuration>
+
